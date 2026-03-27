@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PuppyPi Voice Command</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <div class="logo">
+        <i class="fa-solid fa-robot"></i>
+        <h1>PuppyPi Control</h1>
+      </div>
+      <div class="status-indicator">
+        <span class="dot" id="ros-dot"></span>
+        <span id="ros-status">Connecting...</span>
+      </div>
+    </header>
+
+    <main>
+      <div class="visualizer-container">
+        <div class="blob"></div>
+        <div class="blob blob-2"></div>
+        <div class="mic-button" id="mic-btn">
+          <i class="fa-solid fa-microphone"></i>
+        </div>
+      </div>
+
+      <div class="interaction-area">
+        <p class="instruction" id="instruction-text">Tap the mic and say a command</p>
+        <h2 class="transcript" id="transcript-text">Waiting for voice...</h2>
+        <div class="action-result" id="action-result"></div>
+      </div>
+    </main>
+
+    <section class="command-hints">
+      <h3>Try saying:</h3>
+      <div class="chips">
+        <span class="chip">"Stand up"</span>
+        <span class="chip">"Walk forward"</span>
+        <span class="chip">"Push ups"</span>
+        <span class="chip">"Crawl"</span>
+        <span class="chip">"Dance"</span>
+        <span class="chip">"Jump"</span>
+        <span class="chip">"Turn left"</span>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
