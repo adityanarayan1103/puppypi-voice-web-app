@@ -99,3 +99,61 @@ npm install
 # Run backend on port 3000
 npm start
 ```
+
+## 📝 Sample Execution Log
+
+When running the application, you'll see real-time logging as voice commands are transcribed, normalized, and executed on the robot:
+
+```text
+(base) adityanarayanverma@Aditya-Narayan-Verma-B995s-Macbook-Air ~ % cd ~/Desktop/puppipi/ros1_ws/voicecontrolapp && npm start
+
+> puppypi-voice-backend@1.0.0 start
+> node src/server.js
+
+═══════════════════════════════════════════════════
+  🐾  PuppyPi Voice Control Backend
+  📡  Direct rosbridge control (no robot-side nodes needed)
+═══════════════════════════════════════════════════
+ROSLib uses utf8 encoding by default. It would be more efficient to use ascii (if possible).
+[HTTP] ✅ Server on http://localhost:3000
+[HTTP] Try: curl -X POST http://localhost:3000/command -H "Content-Type: application/json" -d '{"command":"stand"}'
+═══════════════════════════════════════════════════
+[ROS] ✅ Connected to ws://10.152.0.201:9090
+[ROBOT] Publishers ready: /pose, /gait, /velocity
+[ROBOT] Initializing robot (go_home + set_running)...
+[ROBOT] ✅ go_home done
+[ROBOT] ✅ set_running(true) done
+[ROBOT] ✅ Robot initialized and ready.
+[HTTP] POST /command
+[API] Received: "turn right"
+[API] Normalized: "turn right" → "right"
+[ROBOT] ➡️  Executing: right
+[HTTP] POST /command
+[API] Received: "shutdown"
+[API] ❌ Unknown command: "shutdown"
+[HTTP] POST /command
+[API] Received: "sit down"
+[API] Normalized: "sit down" → "sit"
+[ROBOT] ➡️  Executing: sit
+[HTTP] POST /command
+[API] Received: "jump jump"
+[API] Normalized: "jump jump" → "jump"
+[ROBOT] ➡️  Executing: jump
+[HTTP] POST /command
+[API] Received: "crawl"
+[API] Normalized: "crawl" → "crawl"
+[ROBOT] ➡️  Executing: crawl
+[ROBOT] Initializing robot (go_home + set_running)...
+[ROBOT] ✅ go_home done
+[ROBOT] ✅ set_running(true) done
+[ROBOT] ✅ Robot initialized and ready.
+[HTTP] POST /command
+[API] Received: "push up"
+[API] Normalized: "push up" → "push_ups"
+[ROBOT] ➡️  Executing: push_ups
+[ROBOT] Initializing robot (go_home + set_running)...
+[ROBOT] ✅ go_home done
+[ROBOT] ✅ set_running(true) done
+[ROBOT] ✅ Robot initialized and ready.
+[ROBOT] Calling ActionGroup push_up.d6ac
+```
