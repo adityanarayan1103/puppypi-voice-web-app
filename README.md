@@ -81,6 +81,74 @@ The backend code is modularized into cleanly separated domains inside the `src` 
 
 ---
 
+## 🎤 Complete Command Reference
+
+All **32 voice commands** currently supported, grouped by category:
+
+### Posture
+
+| Command | Voice Triggers | How It Works |
+|---|---|---|
+| `stand` | "stand", "stand up", "get up" | Publishes default pose + gait |
+| `sit` | "sit", "sit down" | Lowers body height to -6 |
+| `lie` | "lie", "lie down", "lay down" | Lowers body height to -3 |
+| `lie_down` | "lie down action", "play dead", "down" | Runs `lie_down.d6ac` action group |
+| `home` | "home", "go home", "reset" | Calls `go_home` + `set_running` services |
+| `stop` | "stop", "halt", "freeze" | Sets velocity to zero |
+
+### Movement
+
+| Command | Voice Triggers | How It Works |
+|---|---|---|
+| `forward` | "forward", "walk", "walk forward", "go forward" | Velocity x=10 for 2s |
+| `back` | "back", "backward", "go back" | Velocity x=-10 for 2s |
+| `left` | "left", "turn left", "go left" | Yaw rate 0.5 for 2s |
+| `right` | "right", "turn right", "go right" | Yaw rate -0.5 for 2s |
+| `spin` | "spin", "rotate", "turn around" | Yaw rate 1.2 for 3.5s |
+| `crawl` | "crawl", "crawl forward", "creep" | Low stance + slow forward |
+| `mark_time` | "march", "mark time", "step in place" | Calls `set_mark_time` service |
+
+### Head / Look
+
+| Command | Voice Triggers | How It Works |
+|---|---|---|
+| `look_up` | "look up", "raise head", "head up" | Pitch +20° |
+| `look_down` | "look down", "head down", "lower head" | Pitch -15° |
+| `nod` | "nod", "nod head", "yes" | Runs `nod.d6ac` action group |
+| `shake_head` | "shake head", "no", "say no" | Runs `shake_head.d6ac` action group |
+
+### Expressions
+
+| Command | Voice Triggers | How It Works |
+|---|---|---|
+| `hello` | "hello", "hi", "hey" | Roll oscillation wave |
+| `shake_hands` | "shake hands", "handshake", "give paw" | Runs `shake_hands.d6ac` |
+| `shake` | "shake", "wiggle" | Yaw oscillation |
+| `wave` | "wave", "wave paw" | Runs `wave.d6ac` |
+| `bow` | "bow", "take a bow", "bow down" | Runs `bow.d6ac` |
+
+### Tricks
+
+| Command | Voice Triggers | How It Works |
+|---|---|---|
+| `dance` | "dance" | Pitch + roll oscillation pattern |
+| `jump` | "jump" | Height drop + spring up |
+| `push_ups` | "push up", "push ups", "exercise" | Runs `push_up.d6ac` |
+| `moonwalk` | "moonwalk", "moon walk", "michael jackson" | Runs `moonwalk.d6ac` |
+| `kick_left` | "kick left", "left kick" | Runs `kick_ball_left.d6ac` |
+| `kick_right` | "kick right", "right kick" | Runs `kick_ball_right.d6ac` |
+| `climb_stairs` | "climb", "climb stairs", "go upstairs" | Runs `up_stairs_2cm.d6ac` |
+| `boxing` | "box", "boxing", "punch", "fight" | Runs `boxing.d6ac` |
+
+### Body Demos
+
+| Command | Voice Triggers | How It Works |
+|---|---|---|
+| `turn_pitch` | "pitch", "turn pitch", "tilt" | Smooth pitch oscillation ±23° |
+| `turn_roll` | "roll", "turn roll", "sway" | Smooth roll oscillation ±23° |
+
+---
+
 ## 🛠️ Extensibility
 
 To add a new action (e.g. "Sit Down"):
