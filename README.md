@@ -38,30 +38,46 @@ sequenceDiagram
 
 ---
 
-## ⚙️ Component Breakdown
+## ⚙️ Component Breakdown (`src/` Directory)
 
-### 1. Browser Client (`public/app.js` & `index.html`)
-The frontend is built using standard HTML/CSS/JS with a glassmorphism UI.
-- **Web Speech API:** Leverages the browser's native speech recognition engine (requires Chrome/Safari). This ensures high-accuracy speech-to-text processing on the client without requiring API keys or costly cloud STT services like Google Cloud or AWS.
-- **State Management:** Tracks whether the microphone is active and polls the backend `/health` endpoint every 3 seconds to keep a visual indicator (Green/Red dot) showing ROS WebSocket connectivity.
+The backend code is modularized into cleanly separated domains inside the `src` folder:
 
-### 2. The Normalization Engine (`src/normalizer.js`)
-Voice transcripts are rarely perfect. A user might say *"go forward"* or *"can you walk forward please"*. The standard backend cannot decipher this without NLP.
-The application implements a lightning-fast **4-Phase Substring Normalizer**:
-1. **Exact match:** e.g., "stand"
-2. **Starts-with match (longest preferred):** Prefers "go forward" over "go"
-3. **First-word fallback:** Captures the root verb if the rest of the sentence is fluff.
-4. **Whole-word regex:** Gracefully traps targets inside complex sentences.
+### `src/server.js` (The Entry Point)
+- **Role:** The main executable script that ties everything together.
+- **Functionality:** 
+  - Initializes the Express.js HTTP server.
+  - Serves the frontend Web UI (`public/`).
+  - Boots up the WebSocket ROS Router.
+  - Ensures a controlled boot sequence (waits for ROS connection before calling initialization commands on the robot).
 
-### 3. Direct Robot Controller (`src/robot.js`)
-This module is the core innovation of the app. It bypasses the need for arbitrary custom Python listener scripts on the Pi.
-How it mimics the WonderPi app:
-- **Initialization Workflow:** The Pi's motion controller engine naturally hangs on boot preventing arbitrary movements. `initRobot()` uses `roslibjs` to call standard ROS services (`/puppy_control/go_home` -> `set_running(True)`) exactly as the mobile app does when a user opens the "Performance" action tab.
-- **Motion Dispatch:** Rather than sending abstract string commands to a proxy node, `robot.js` unpacks exact robot telemetry constraints (e.g. `doMove(10, 0, 0)` builds exact ROS Message configurations) and publishes them directly to `/puppy_control/pose`, `/puppy_control/gait`, and `/puppy_control/velocity`.
-- **Action Groups:** For highly complex encoded movements (like `push_up`), the server directly pings the robot's `/puppy_control/runActionGroup` service with the `push_up.d6ac` binary.
+### `src/routes.js` (The API Endpoints)
+- **Role:** Handles incoming HTTP REST requests from the browser.
+- **Functionality:**
+  - `POST /command`: Receives raw voice strings, passes them to the Normalizer, and if a canonical match is found, passes it to the Robot controller.
+  - `GET /health`: Used by the Web UI to constantly poll and verify that the backend is alive and connected to the robot.
+  - Provides strict parameter validation and error formatting (200 OK vs 400 Bad Request).
 
-### 4. ROS Bridge Router (`src/ros.js`)
-Handles fault-tolerant WebSocket connections to `ws://10.152.0.201:9090` (`rosbridge_server`). Auto-reconnects safely if the Pi loses Wi-Fi or reboots.
+### `src/ros.js` (The WebSocket Bridge Router)
+- **Role:** Manages the low-level network connection to the Pi.
+- **Functionality:**
+  - Connects to `ws://10.152.0.201:9090` using the `roslibjs` library.
+  - Contains fault-tolerant lifecycle management (if the Wi-Fi drops, it automatically loops a reconnect attempt every 3 seconds without crashing the server).
+
+### `src/normalizer.js` (The Language Engine)
+- **Role:** Voice transcripts are rarely perfect. A user might say *"go forward"* or *"can you walk forward please"*. The normalizer decipher this without needing an expensive NLP cloud service.
+- **Functionality:**
+  - Implements a lightning-fast **4-Phase Engine**:
+    1. **Exact match:** e.g., "stand"
+    2. **Starts-with match:** Prefers "go forward" over "go"
+    3. **First-word fallback:** Captures the root verb if the rest of the sentence is fluff.
+    4. **Whole-word regex:** Traps string targets hiding inside complex sentences.
+
+### `src/robot.js` (The Core Motion Controller)
+- **Role:** This module is the core innovation of the app. It bypasses the need for arbitrary custom Python listener scripts running on the Raspberry Pi.
+- **Functionality:**
+  - Maps words to exact robot physics constraints (e.g. `doMove(10, 0, 0, 2000)` sets XY velocity for exactly 2 seconds).
+  - Directly commands the Raspberry Pi by publishing to `/puppy_control/pose`, `/puppy_control/gait`, and `/puppy_control/velocity`.
+  - For complex, pre-encoded physical movements (like `push_ups` or `dance`), the server directly pings the robot's action group service with binary file targets (e.g., `push_up.d6ac`).
 
 ---
 
