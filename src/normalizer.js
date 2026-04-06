@@ -7,23 +7,45 @@
 
 // Canonical command → list of accepted phrases
 const COMMAND_MAP = {
-  stand:    ["stand", "stand up", "get up"],
-  sit:      ["sit", "sit down"],
-  forward:  ["forward", "walk", "walk forward", "go forward"],
-  back:     ["back", "backward", "go back", "walk back"],
-  left:     ["left", "turn left", "go left"],
-  right:    ["right", "turn right", "go right"],
-  stop:     ["stop", "halt", "freeze"],
-  lie:      ["lie", "lie down", "lay down"],
-  look_up:  ["look up", "raise head", "head up"],
-  spin:     ["spin", "rotate", "turn around"],
-  home:     ["home", "go home", "home position", "reset"],
-  hello:    ["hello", "hi", "hey", "wave"],
-  dance:    ["dance"],
-  jump:     ["jump"],
-  shake:    ["shake", "shake head"],
-  crawl:    ["crawl", "crawl forward", "creep"],
-  push_ups: ["push up", "push ups", "do a push up", "do push ups", "exercise"],
+  // ── Posture ──
+  stand:        ["stand", "stand up", "get up"],
+  sit:          ["sit", "sit down"],
+  lie:          ["lie", "lie down", "lay down"],
+  home:         ["home", "go home", "home position", "reset"],
+  stop:         ["stop", "halt", "freeze"],
+
+  // ── Movement ──
+  forward:      ["forward", "walk", "walk forward", "go forward"],
+  back:         ["back", "backward", "go back", "walk back"],
+  left:         ["left", "turn left", "go left"],
+  right:        ["right", "turn right", "go right"],
+  spin:         ["spin", "rotate", "turn around"],
+  crawl:        ["crawl", "crawl forward", "creep"],
+  mark_time:    ["march", "mark time", "step in place", "marching"],
+
+  // ── Head / Look ──
+  look_up:      ["look up", "raise head", "head up"],
+  look_down:    ["look down", "head down", "lower head"],
+  nod:          ["nod", "nod head", "yes"],
+  shake_head:   ["shake head", "no", "say no"],
+
+  // ── Expressions ──
+  hello:        ["hello", "hi", "hey", "wave"],
+  shake_hands:  ["shake hands", "handshake", "give paw", "paw"],
+  shake:        ["shake", "wiggle"],
+
+  // ── Tricks ──
+  dance:        ["dance"],
+  jump:         ["jump"],
+  push_ups:     ["push up", "push ups", "do a push up", "do push ups", "exercise"],
+  moonwalk:     ["moonwalk", "moon walk", "michael jackson"],
+  kick_left:    ["kick left", "left kick", "kick ball left"],
+  kick_right:   ["kick right", "right kick", "kick ball right"],
+  climb_stairs: ["climb", "climb stairs", "stairs", "go upstairs"],
+
+  // ── Body demos ──
+  turn_pitch:   ["pitch", "turn pitch", "pitch demo", "tilt"],
+  turn_roll:    ["roll", "turn roll", "roll demo", "sway"],
 };
 
 // Pre-build reverse lookup: phrase → canonical command

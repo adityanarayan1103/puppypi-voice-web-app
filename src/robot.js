@@ -224,17 +224,83 @@ async function doCrawl() {
   await initRobot();
 }
 
-async function doPushUps() {
-  await initRobot();
+/**
+ * Run a .d6ac action group file on the robot.
+ * @param {string} actionFile - e.g. "push_up.d6ac"
+ * @param {boolean} [resetFirst=true] - call initRobot() before running
+ */
+async function runAction(actionFile, resetFirst = true) {
+  if (resetFirst) await initRobot();
   try {
-    console.log("[ROBOT] Calling ActionGroup push_up.d6ac");
+    console.log(`[ROBOT] Calling ActionGroup ${actionFile}`);
     await callService("/puppy_control/runActionGroup", "puppy_control/SetRunActionName", {
-      name: "push_up.d6ac",
-      wait: false
+      name: actionFile,
+      wait: false,
     });
   } catch (e) {
-    console.warn("[ROBOT] ⚠️  ActionGroup push_up failed:", e);
+    console.warn(`[ROBOT] ⚠️  ActionGroup ${actionFile} failed:`, e);
   }
+}
+
+async function doMarkTime() {
+  try {
+    await callService("/puppy_control/set_mark_time", "std_srvs/SetBool", { data: true });
+    console.log("[ROBOT] ✅ mark_time started");
+    await sleep(3000);
+    await callService("/puppy_control/go_home", "std_srvs/Empty");
+  } catch (e) {
+    console.warn("[ROBOT] ⚠️  mark_time failed:", e);
+  }
+}
+
+async function doTurnPitch() {
+  pubVel(0, 0, 0);
+  await sleep(200);
+  const stand = { ...DEFAULT_POSE, x_shift: 0.4, stance_x: 1, height: -10 };
+  const step = 0.32;
+  const max = 23;
+  for (let angle = 0; angle >= -max; angle -= step) {
+    pubPose({ ...stand, pitch: deg2rad(angle) });
+    await sleep(6);
+  }
+  for (let angle = -max; angle <= max; angle += step) {
+    pubPose({ ...stand, pitch: deg2rad(angle) });
+    await sleep(6);
+  }
+  for (let angle = max; angle >= 0; angle -= step) {
+    pubPose({ ...stand, pitch: deg2rad(angle) });
+    await sleep(6);
+  }
+  pubPose();
+}
+
+async function doTurnRoll() {
+  pubVel(0, 0, 0);
+  await sleep(200);
+  const stand = { ...DEFAULT_POSE, x_shift: 0.4, stance_x: 1, height: -10 };
+  const step = 0.32;
+  const max = 23;
+  for (let angle = 0; angle >= -max; angle -= step) {
+    pubPose({ ...stand, roll: deg2rad(angle) });
+    await sleep(6);
+  }
+  for (let angle = -max; angle <= max; angle += step) {
+    pubPose({ ...stand, roll: deg2rad(angle) });
+    await sleep(6);
+  }
+  for (let angle = max; angle >= 0; angle -= step) {
+    pubPose({ ...stand, roll: deg2rad(angle) });
+    await sleep(6);
+  }
+  pubPose();
+}
+
+async function doLookDown() {
+  pubVel(0, 0, 0);
+  await sleep(200);
+  pubPose({ pitch: deg2rad(-15), run_time: 500 });
+  await sleep(1500);
+  pubPose({ run_time: 500 });
 }
 
 // ════════════════════════════════════════════════
@@ -242,23 +308,45 @@ async function doPushUps() {
 // ════════════════════════════════════════════════
 
 const DISPATCH = {
-  stand:    doStand,
-  sit:      doSit,
-  forward:  () => doMove(10, 0, 0, 2000),
-  back:     () => doMove(-10, 0, 0, 2000),
-  left:     () => doMove(0, 0, 0.5, 2000),
-  right:    () => doMove(0, 0, -0.5, 2000),
-  spin:     () => doMove(0, 0, 1.2, 3500),
-  stop:     doStop,
-  lie:      doLie,
-  look_up:  doLookUp,
-  home:     doHome,
-  hello:    doHello,
-  dance:    doDance,
-  jump:     doJump,
-  shake:    doShake,
-  crawl:    doCrawl,
-  push_ups: doPushUps,
+  // ── Posture ──
+  stand:        doStand,
+  sit:          doSit,
+  lie:          doLie,
+  home:         doHome,
+  stop:         doStop,
+
+  // ── Movement ──
+  forward:      () => doMove(10, 0, 0, 2000),
+  back:         () => doMove(-10, 0, 0, 2000),
+  left:         () => doMove(0, 0, 0.5, 2000),
+  right:        () => doMove(0, 0, -0.5, 2000),
+  spin:         () => doMove(0, 0, 1.2, 3500),
+  crawl:        doCrawl,
+  mark_time:    doMarkTime,
+
+  // ── Head / Look ──
+  look_up:      doLookUp,
+  look_down:    doLookDown,
+  nod:          () => runAction("nod.d6ac"),
+  shake_head:   () => runAction("shake_head.d6ac"),
+
+  // ── Expressions ──
+  hello:        doHello,
+  shake_hands:  () => runAction("shake_hands.d6ac"),
+  shake:        doShake,
+
+  // ── Tricks ──
+  dance:        doDance,
+  jump:         doJump,
+  push_ups:     () => runAction("push_up.d6ac"),
+  moonwalk:     () => runAction("moonwalk.d6ac"),
+  kick_left:    () => runAction("kick_ball_left.d6ac"),
+  kick_right:   () => runAction("kick_ball_right.d6ac"),
+  climb_stairs: () => runAction("up_stairs_2cm.d6ac"),
+
+  // ── Body demos ──
+  turn_pitch:   doTurnPitch,
+  turn_roll:    doTurnRoll,
 };
 
 /**
