@@ -33,6 +33,8 @@ const COMMAND_MAP = {
   hello:        ["hello", "hi", "hey", "wave"],
   shake_hands:  ["shake hands", "handshake", "give paw", "paw"],
   shake:        ["shake", "wiggle"],
+  wave:         ["wave", "wave paw"],
+  bow:          ["bow", "take a bow", "bow down"],
 
   // ── Tricks ──
   dance:        ["dance"],
@@ -46,6 +48,8 @@ const COMMAND_MAP = {
   // ── Body demos ──
   turn_pitch:   ["pitch", "turn pitch", "pitch demo", "tilt"],
   turn_roll:    ["roll", "turn roll", "roll demo", "sway"],
+  boxing:       ["box", "boxing", "punch", "fight"],
+  lie_down:     ["lie down action", "play dead", "down"],
 };
 
 // Pre-build reverse lookup: phrase → canonical command

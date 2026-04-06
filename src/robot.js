@@ -334,6 +334,8 @@ const DISPATCH = {
   hello:        doHello,
   shake_hands:  () => runAction("shake_hands.d6ac"),
   shake:        doShake,
+  wave:         () => runAction("wave.d6ac"),
+  bow:          () => runAction("bow.d6ac"),
 
   // ── Tricks ──
   dance:        doDance,
@@ -347,6 +349,8 @@ const DISPATCH = {
   // ── Body demos ──
   turn_pitch:   doTurnPitch,
   turn_roll:    doTurnRoll,
+  boxing:       () => runAction("boxing.d6ac"),
+  lie_down:     () => runAction("lie_down.d6ac"),
 };
 
 /**
